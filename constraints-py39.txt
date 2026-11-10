@@ -1,0 +1,13 @@
+# Exact direct dependency versions verified with Python 3.9.6 in this project.
+# Use with requirements.txt; transitive packages are resolver-selected and
+# this file is intentionally not a full environment freeze.
+numpy==1.26.4
+pandas==2.3.3
+scikit-learn==1.6.1
+matplotlib==3.9.4
+joblib==1.5.3
+streamlit==1.50.0
+ipykernel==6.31.0
+nbclient==0.10.2
+nbconvert==7.17.1
+nbformat==5.10.4

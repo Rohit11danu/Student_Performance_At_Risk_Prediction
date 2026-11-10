@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1510" viewBox="0 0 1440 1510" role="img" aria-labelledby="title desc">
+  <title id="title">Student Performance and At-Risk Prediction system architecture</title>
+  <desc id="desc">Synthetic data flows through validation, EDA, stratified train, validation, and test splits. Training and validation choose and freeze the Random Forest and threshold. Test data evaluates frozen candidates on a separate reporting branch. The selected saved pipeline is used for advisory Streamlit inference and human review. Test results do not feed back into selection.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#587084"/></marker>
+    <marker id="arrowTest" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#c56a3a"/></marker>
+    <style>
+      text { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+      .title { font-size: 30px; font-weight: 700; fill: #18324b; }
+      .subtitle { font-size: 15px; fill: #587084; }
+      .box { stroke-width: 2; rx: 14; }
+      .source { fill: #eaf2ff; stroke: #3973b9; }
+      .process { fill: #eef6fa; stroke: #4c8299; }
+      .validation { fill: #fff4df; stroke: #bf861e; }
+      .selected { fill: #e6f4ec; stroke: #38805a; }
+      .test { fill: #fff0e8; stroke: #c56a3a; }
+      .human { fill: #e9e7f8; stroke: #6655a3; }
+      .label { font-size: 18px; font-weight: 700; fill: #18324b; text-anchor: middle; }
+      .detail { font-size: 14px; fill: #36536a; text-anchor: middle; }
+      .edge { fill: none; stroke: #587084; stroke-width: 2.5; marker-end: url(#arrow); }
+      .edgeTest { fill: none; stroke: #c56a3a; stroke-width: 2.5; marker-end: url(#arrowTest); }
+      .edgeDash { fill: none; stroke: #c56a3a; stroke-width: 2.5; stroke-dasharray: 8 6; marker-end: url(#arrowTest); }
+      .note { font-size: 13px; fill: #9d4d25; font-weight: 650; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="1440" height="1510" fill="#ffffff"/>
+  <text class="title" x="720" y="42" text-anchor="middle">Student Performance &amp; At-Risk Prediction</text>
+  <text class="subtitle" x="720" y="68" text-anchor="middle">Synthetic-data workflow · validation-only selection · held-out test branch · human-reviewed inference</text>
+
+  <rect class="box source" x="450" y="92" width="540" height="76"/>
+  <text class="label" x="720" y="123">Synthetic data generator</text>
+  <text class="detail" x="720" y="148">Python random · seed 42 · 1,000 generated records</text>
+  <path class="edge" d="M720 168 L720 192"/>
+
+  <rect class="box source" x="450" y="198" width="540" height="76"/>
+  <text class="label" x="720" y="229">Synthetic student dataset</text>
+  <text class="detail" x="720" y="254">CSV · one unique synthetic student per row · future score not stored</text>
+  <path class="edge" d="M720 274 L720 298"/>
+
+  <rect class="box process" x="450" y="304" width="540" height="76"/>
+  <text class="label" x="720" y="335">Data validation and EDA</text>
+  <text class="detail" x="720" y="360">Missingness · duplicates · ranges · outliers · class balance · leakage</text>
+  <path class="edge" d="M720 380 L720 404"/>
+
+  <rect class="box process" x="450" y="410" width="540" height="86"/>
+  <text class="label" x="720" y="445">Leakage-safe stratified split</text>
+  <text class="detail" x="720" y="472">70% train · 15% validation · 15% test · seed 42</text>
+  <path class="edge" d="M720 496 L720 520 L230 520 L230 545"/>
+  <path class="edge" d="M720 520 L700 520 L700 545"/>
+  <path class="edgeTest" d="M720 520 L1170 520 L1170 545"/>
+
+  <rect class="box process" x="60" y="550" width="340" height="88"/>
+  <text class="label" x="230" y="582">Train · 700 rows</text>
+  <text class="detail" x="230" y="609">63 at-risk · fit preprocessing here</text>
+
+  <rect class="box validation" x="530" y="550" width="340" height="88"/>
+  <text class="label" x="700" y="582">Validation · 150 rows</text>
+  <text class="detail" x="700" y="609">14 at-risk · threshold and model selection</text>
+
+  <rect class="box test" x="1000" y="550" width="340" height="88"/>
+  <text class="label" x="1170" y="582">Held-out test · 150 rows</text>
+  <text class="detail" x="1170" y="609">14 at-risk · locked until selection freezes</text>
+
+  <path class="edge" d="M230 638 L230 690"/>
+  <rect class="box process" x="60" y="695" width="340" height="112"/>
+  <text class="label" x="230" y="730">Preprocessing and candidate fit</text>
+  <text class="detail" x="230" y="758">Median imputer in each pipeline</text>
+  <text class="detail" x="230" y="780">Scale Logistic Regression; fit Dummy, LR, RF</text>
+
+  <path class="edge" d="M400 751 L510 751"/>
+  <path class="edge" d="M700 638 L700 690"/>
+  <rect class="box validation" x="530" y="695" width="340" height="112"/>
+  <text class="label" x="700" y="730">Validation threshold and selection</text>
+  <text class="detail" x="700" y="758">Tune candidate thresholds by positive-class F2</text>
+  <text class="detail" x="700" y="780">Select highest validation F2; tie-break by AP, recall</text>
+  <path class="edge" d="M700 807 L700 845"/>
+
+  <rect class="box selected" x="530" y="850" width="340" height="88"/>
+  <text class="label" x="700" y="882">Freeze selection before test</text>
+  <text class="detail" x="700" y="909">Random Forest · threshold 0.254228</text>
+
+  <path class="edge" d="M700 938 L700 976"/>
+  <rect class="box selected" x="530" y="981" width="340" height="76"/>
+  <text class="label" x="700" y="1012">Saved model bundle</text>
+  <text class="detail" x="700" y="1037">Pipeline · threshold · feature schema · versions</text>
+
+  <path class="edge" d="M700 1057 L700 1090"/>
+  <rect class="box process" x="530" y="1095" width="340" height="76"/>
+  <text class="label" x="700" y="1126">Streamlit prediction interface</text>
+  <text class="detail" x="700" y="1151">Validated inputs · saved pipeline only</text>
+
+  <path class="edge" d="M700 1171 L700 1204"/>
+  <rect class="box selected" x="530" y="1209" width="340" height="70"/>
+  <text class="label" x="700" y="1238">Advisory risk assessment</text>
+  <text class="detail" x="700" y="1261">Score and descriptive band · uncalibrated</text>
+
+  <path class="edge" d="M700 1279 L700 1312"/>
+  <rect class="box human" x="530" y="1317" width="340" height="70"/>
+  <text class="label" x="700" y="1347">Human review</text>
+  <text class="detail" x="700" y="1370">Supportive context · no automated sanctions</text>
+
+  <path class="edgeTest" d="M1170 638 L1170 900"/>
+  <path class="edgeDash" d="M870 894 L985 894"/>
+  <text class="note" x="925" y="878" text-anchor="middle">frozen candidates + validation thresholds</text>
+  <rect class="box test" x="1000" y="905" width="340" height="103"/>
+  <text class="label" x="1170" y="940">One-time held-out evaluation</text>
+  <text class="detail" x="1170" y="967">Score frozen baseline and candidate models</text>
+  <text class="detail" x="1170" y="989">No threshold tuning or reselection on test</text>
+  <path class="edgeTest" d="M1170 1008 L1170 1060"/>
+  <rect class="box test" x="1000" y="1065" width="340" height="86"/>
+  <text class="label" x="1170" y="1098">Saved evaluation report</text>
+  <text class="detail" x="1170" y="1125">Metrics · confusion matrices · comparison plots</text>
+  <path d="M1000 1164 L1340 1164" stroke="#c56a3a" stroke-width="2" stroke-dasharray="7 6"/>
+  <text class="note" x="1170" y="1190" text-anchor="middle">Reporting only — test results do not feed back</text>
+  <text class="note" x="1170" y="1210" text-anchor="middle">into model or threshold selection.</text>
+</svg>

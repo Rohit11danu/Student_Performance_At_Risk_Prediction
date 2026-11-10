@@ -1,0 +1,43 @@
+# Python environments and bytecode
+.venv/
+.venv*/
+venv/
+env/
+__pycache__/
+*.py[cod]
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.toml
+.streamlit/secrets.toml
+
+# Editor, operating-system and test/tool caches
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+*.tmp
+*.temp
+*.log
+
+# Raw and locally collected data are never committed. The reviewed synthetic
+# demonstration CSV is explicitly allow-listed below; replace only after
+# confirming it contains no real student records.
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/student_performance.csv
+

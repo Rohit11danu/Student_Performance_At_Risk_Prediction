@@ -1,0 +1,177 @@
+{
+  "dataset_path": "data/processed/student_performance.csv",
+  "dataset_rows": 1000,
+  "seed": 42,
+  "split_sizes": {
+    "train": 700,
+    "validation": 150,
+    "test": 150
+  },
+  "split_class_counts": {
+    "train": {
+      "0": 637,
+      "1": 63
+    },
+    "validation": {
+      "0": 136,
+      "1": 14
+    },
+    "test": {
+      "0": 136,
+      "1": 14
+    }
+  },
+  "audit": {
+    "rows": 1000,
+    "columns": [
+      "student_id",
+      "attendance_pct",
+      "assignment_completion_pct",
+      "previous_assessment_1_pct",
+      "previous_assessment_2_pct",
+      "previous_assessment_trend_pct",
+      "at_risk"
+    ],
+    "target": "at_risk",
+    "target_counts": {
+      "0": 909,
+      "1": 91
+    },
+    "id_unique": true,
+    "features": [
+      "attendance_pct",
+      "assignment_completion_pct",
+      "previous_assessment_1_pct",
+      "previous_assessment_2_pct",
+      "previous_assessment_trend_pct"
+    ],
+    "excluded_columns": [
+      "student_id",
+      "at_risk"
+    ],
+    "suspicious_columns": [],
+    "target_definition": "1 when the simulated next assessment score is below 40%; that score is not stored in the CSV.",
+    "temporal_assumption": "One independent synthetic row per unique student; no repeated student sequence is generated."
+  },
+  "selection_rule": "Among Logistic Regression and Random Forest, maximize validation F2 at each model's validation-tuned threshold; ties use validation PR-AUC then recall. Test metrics did not affect selection.",
+  "validation_metrics": {
+    "Dummy baseline": {
+      "threshold": 0.5,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "f2": 0.0,
+      "pr_auc_average_precision": 0.09333333333333334,
+      "confusion_matrix": {
+        "tn": 136,
+        "fp": 0,
+        "fn": 14,
+        "tp": 0
+      }
+    },
+    "Logistic Regression": {
+      "threshold": 0.45882443735506834,
+      "validation_f2": 0.6593406593406593,
+      "validation_recall": 0.8571428571428571,
+      "validation_precision": 0.34285714285714286,
+      "precision": 0.34285714285714286,
+      "recall": 0.8571428571428571,
+      "f1": 0.4897959183673469,
+      "f2": 0.6593406593406593,
+      "pr_auc_average_precision": 0.5433259884614564,
+      "confusion_matrix": {
+        "tn": 113,
+        "fp": 23,
+        "fn": 2,
+        "tp": 12
+      }
+    },
+    "Random Forest": {
+      "threshold": 0.2542277597809791,
+      "validation_f2": 0.6626506024096386,
+      "validation_recall": 0.7857142857142857,
+      "validation_precision": 0.4074074074074074,
+      "precision": 0.4074074074074074,
+      "recall": 0.7857142857142857,
+      "f1": 0.5365853658536586,
+      "f2": 0.6626506024096386,
+      "pr_auc_average_precision": 0.5273805943426196,
+      "confusion_matrix": {
+        "tn": 120,
+        "fp": 16,
+        "fn": 3,
+        "tp": 11
+      }
+    }
+  },
+  "selected_model": "Random Forest",
+  "selected_threshold": 0.2542277597809791,
+  "test_metrics": {
+    "Dummy baseline": {
+      "threshold": 0.5,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "f2": 0.0,
+      "pr_auc_average_precision": 0.09333333333333334,
+      "confusion_matrix": {
+        "tn": 136,
+        "fp": 0,
+        "fn": 14,
+        "tp": 0
+      }
+    },
+    "Logistic Regression": {
+      "threshold": 0.45882443735506834,
+      "precision": 0.3333333333333333,
+      "recall": 0.8571428571428571,
+      "f1": 0.48,
+      "f2": 0.6521739130434783,
+      "pr_auc_average_precision": 0.5662216567538695,
+      "confusion_matrix": {
+        "tn": 112,
+        "fp": 24,
+        "fn": 2,
+        "tp": 12
+      }
+    },
+    "Random Forest": {
+      "threshold": 0.2542277597809791,
+      "precision": 0.30434782608695654,
+      "recall": 0.5,
+      "f1": 0.3783783783783784,
+      "f2": 0.4430379746835443,
+      "pr_auc_average_precision": 0.5071793226409418,
+      "confusion_matrix": {
+        "tn": 120,
+        "fp": 16,
+        "fn": 7,
+        "tp": 7
+      }
+    }
+  },
+  "test_interpretation": {
+    "false_positive": "An alert for a student whose simulated next score was not below 40%; this may consume staff attention and can create avoidable concern.",
+    "false_negative": "A missed alert for a student whose simulated next score was below 40%; the student may not receive timely support. Recall is therefore emphasized during validation threshold selection."
+  },
+  "limitations": [
+    "All records and labels are synthetic and generated from a known scoring formula; measured performance does not establish real-world effectiveness.",
+    "The sample has only 91 positive labels overall, so split metrics have substantial sampling uncertainty.",
+    "The binary at-risk threshold is based on one simulated next assessment and omits context, timing, and intervention capacity.",
+    "The final artifact is fit on the training partition only; validation is reserved for selection and thresholding, and the test split remains held out.",
+    "No calibration study, subgroup fairness analysis, or external validation is performed."
+  ],
+  "artifact_path": "reports/model_artifacts/at_risk_pipeline.joblib",
+  "figure_paths": [
+    "reports/figures/model_comparison.png",
+    "reports/figures/test_confusion_matrices.png"
+  ],
+  "dependency_versions": {
+    "python": "3.9.6",
+    "numpy": "1.26.4",
+    "pandas": "2.3.3",
+    "scikit_learn": "1.6.1",
+    "joblib": "1.5.3",
+    "matplotlib": "3.9.4"
+  }
+}
